@@ -45,7 +45,7 @@ namespace NotesApi.Controllers
             var userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!
             );
-            
+
             var note = new Note
             {
                 Content = request.Content,
@@ -60,6 +60,52 @@ namespace NotesApi.Controllers
                 id = note.Id,
                 content = note.Content
             });
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateNote(int id, CreateNoteRequest request)
+        {
+            var userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!
+            );
+
+            var note = _context.Notes
+                .FirstOrDefault(n => n.Id == id && n.UserId == userId);
+
+            if (note == null)
+            {
+                return NotFound();
+            }
+
+            note.Content = request.Content;
+            _context.SaveChanges();
+
+            return Ok(new
+            {
+                id = note.Id,
+                content = note.Content
+            });
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteNote(int id)
+        {
+            var userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!
+            );
+
+            var note = _context.Notes
+                .FirstOrDefault(n => n.Id == id && n.UserId == userId);
+
+            if (note == null)
+            {
+                return NotFound();
+            }
+
+            _context.Notes.Remove(note);
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }
