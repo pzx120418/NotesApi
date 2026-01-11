@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NotesApi.Data;
 using NotesApi.Dtos;
 using NotesApi.Models;
@@ -55,7 +54,7 @@ namespace NotesApi.Controllers
             _context.Notes.Add(note);
             _context.SaveChanges();
 
-            return Ok(new
+            return Created($"/notes/{note.Id}", new
             {
                 id = note.Id,
                 content = note.Content
